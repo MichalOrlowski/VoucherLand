@@ -43,6 +43,10 @@
 
 		<div id="todo-form" class="row">
 			<div class="col-sm-8 col-sm-offset-2 text-center">
+				<div ng-show="errorMessage" class="alert alert-danger">
+					<strong>{{errorMessage}}</strong>
+				</div>
+
 				<form>
 					<div class="form-group">
 						<input type="text" class="form-control input-lg text-center" placeholder="Put here your voucher code" ng-model="formData.voucherCode">
