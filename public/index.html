@@ -1,0 +1,62 @@
+<!doctype html>
+
+<!-- ASSIGN OUR ANGULAR MODULE -->
+<html ng-app="voucherLand">
+<head>
+	<!-- META -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1"><!-- Optimize mobile viewport -->
+
+	<title>Node/Angular Todo App</title>
+
+	<!-- SCROLLS -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
+	<style>
+		html 					{ overflow-y:scroll; }
+		body 					{ padding-top:50px; }
+		#todo-list 				{ margin-bottom:30px; }
+		#todo-form 	 			{ margin-bottom:50px; }
+	</style>
+
+	<!-- SPELLS -->
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js"></script><!-- load angular 1.2.4 -->
+
+	<script src="js/controllers/mainController.js"></script> <!-- load up our controller -->
+	<script src="js/services/voucherService.js"></script> <!-- load our todo service -->
+	<script src="js/core.js"></script> <!-- load our main application -->
+
+</head>
+<body ng-controller="mainController">
+	<div class="container">
+
+		<div class="jumbotron text-center">
+			<h1>Price: <span class="label label-info">{{productData.currentProductPrice}}</span></h1>
+		</div>
+
+		<div id="todo-list" class="row">
+			<div class="col-sm-4 col-sm-offset-4">
+				<select class="form-control" name="productsSelect" id="productsSelect" ng-model="productData.selectedProductPrice" ng-change="updatePrice()">
+					<option ng-repeat="product in productData.products" value="{{product.price}}">{{product.name}}</option>
+				</select>
+			</div>
+		</div>
+
+		<div id="todo-form" class="row">
+			<div class="col-sm-8 col-sm-offset-2 text-center">
+				<form>
+					<div class="form-group">
+						<input type="text" class="form-control input-lg text-center" placeholder="Put here your voucher code" ng-model="formData.voucherCode">
+					</div>
+
+					<button type="submit" class="btn btn-primary btn-lg" ng-click="calculatePrice()">Calculate new price</button>
+				</form>
+			</div>
+		</div>
+
+		<div class="text-center text-muted">
+			<p>A demo by <a href="https://github.com/MichalOrlowski">Michal Orlowski</a>.</p>
+		</div>
+	</div>
+
+</body>
+</html>
