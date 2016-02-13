@@ -29,7 +29,7 @@ module.exports = function (app) {
 
             query.exec(function (err, campaign) {
                 if (err) {
-                    res.status(500).send(err);
+                    return res.status(500).send(err);
                 }
 
                 var generatedVouchers = voucherGenerator.generateVouchers(generatedVouchersCount, campaign[0].name);
@@ -55,11 +55,11 @@ module.exports = function (app) {
         validateNaiveToken(req, res);
         Voucher.findOne({'voucherId': req.params.voucherId}, function (err, voucher) {
             if (err) {
-                res.send(err);
+                return res.send(err);
             }
 
             if (voucher === null) {
-                res.status(400).send('No voucher with specified voucherId');
+                return res.status(400).send('No voucher with specified voucherId');
             }
 
             res.json(voucher);
@@ -72,15 +72,15 @@ module.exports = function (app) {
         validateNaiveToken(req, res);
         Voucher.findOne({'voucherId': req.params.voucherId}, function (err, voucher) {
             if (err) {
-                res.send(err);
+                return res.send(err);
             }
 
             if (voucher === null) {
-                res.status(400).send('No voucher with specified voucherId');
+                return res.status(400).send('No voucher with specified voucherId');
             }
 
             if (voucher.usages === 0) {
-                res.status(400).send('Voucher already used');
+                return res.status(400).send('Voucher already used');
             }
 
             voucher.usages--;

@@ -2,9 +2,10 @@ angular.module('voucherController', [])
     .controller('mainController', function ($scope, $http, Vouchers) {
         $scope.formData = {};
         $scope.errorMessage;
+        $scope.successMessage;
 
         $scope.productData = {
-            selectedProductPrice: 0,
+            selectedProductPrice: 700,
             currentProductPrice: 0,
             voucherDiscount: 0,
             voucherDiscountType: '',
@@ -16,11 +17,13 @@ angular.module('voucherController', [])
         };
 
         $scope.calculatePrice = function () {
+            $scope.clearMessages();
             if ($scope.formData.voucherCode != undefined) {
                 Vouchers.validateVoucher($scope.formData.voucherCode)
                     .success(function (voucher) {
                         if (voucher.usages > 0) {
                             $scope.processNewDiscount(voucher);
+                            $scope.successMessage = "Voucher is valid!"
                         } else {
                             $scope.errorMessage = "Voucher already used!";
                         }
@@ -35,12 +38,19 @@ angular.module('voucherController', [])
             $scope.productData.currentProductPrice = $scope.productData.selectedProductPrice;
             $scope.productData.voucherDiscount = 0;
             $scope.productData.voucherDiscountType = '';
+
+            $scope.clearMessages();
         };
 
+        $scope.clearMessages = function() {
+            $scope.errorMessage = null;
+            $scope.successMessage = null;
+        }
+
         $scope.processNewDiscount = function(voucher) {
+            $scope.clearMessages();
             $scope.calculateNewPriceWithDiscount(voucher);
 
-            $scope.errorMessage = null;
             $scope.productData.voucherDiscount = voucher.discount;
             $scope.productData.voucherDiscountType = voucher.discountType;
         };
@@ -60,6 +70,7 @@ angular.module('voucherController', [])
                 Vouchers.useVoucher($scope.formData.voucherCode)
                     .success(function (voucher) {
                         $scope.processNewDiscount(voucher);
+                        $scope.successMessage = "You bought item with lower price!";
                     })
                     .error(function (voucher) {
                         $scope.errorMessage = "Invalid voucher!";
