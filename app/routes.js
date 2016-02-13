@@ -1,5 +1,6 @@
 var Voucher = require('./models/voucher');
 var voucherCodes = require('voucher-code-generator');
+var voucherGenerator = require('./utils/voucherGenerator');
 
 module.exports = function (app) {
 
@@ -17,7 +18,7 @@ module.exports = function (app) {
 
             var generatedVouchers = [];
             generatedVoucherCodes.forEach(function (code) {
-                generatedVouchers.push({voucherId: code, used: false});
+                generatedVouchers.push({voucherId: code, used: false, discount: voucherGenerator.randomNumber(1, 50)});
             });
 
             Voucher.collection.insert(generatedVouchers);

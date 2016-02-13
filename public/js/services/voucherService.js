@@ -6,6 +6,9 @@ angular.module('voucherService', [])
 		return {
 			validateVoucher : function(voucherCode) {
 				return $http.get('/api/vouchers/' + voucherCode);
+			},
+			useVoucher : function(voucherCode) {
+				return $http.put('/api/vouchers/use/' + voucherCode);
 			}
 		}
 	});
