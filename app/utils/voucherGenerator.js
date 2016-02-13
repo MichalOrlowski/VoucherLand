@@ -1,4 +1,34 @@
+var voucherCodes = require('voucher-code-generator');
+
 // Random integer number between low and high
-exports.randomNumber = function (low, high) {
+randomNumber = function (low, high) {
     return Math.floor(Math.random() * (high - low + 1) + low);
+};
+
+randomDiscountType = function () {
+    return discountTypes[Math.floor(Math.random() * discountTypes.length)];
+}
+
+var discountTypes = [
+    '%',
+    'PLN'
+]
+
+// Generate single voucher
+exports.generateVouchers = function (generatedVouchersCount) {
+    var generatedVoucherCodes = voucherCodes.generate({
+        length: 8,
+        count: generatedVouchersCount
+    });
+
+    var generatedVouchers = [];
+    generatedVoucherCodes.forEach(function (code) {
+        generatedVouchers.push({voucherId: code,
+            used: false,
+            discount: randomNumber(1, 50),
+            discountType: randomDiscountType()
+        });
+    });
+
+    return generatedVouchers;
 };

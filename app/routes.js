@@ -1,5 +1,4 @@
 var Voucher = require('./models/voucher');
-var voucherCodes = require('voucher-code-generator');
 var voucherGenerator = require('./utils/voucherGenerator');
 
 module.exports = function (app) {
@@ -12,16 +11,7 @@ module.exports = function (app) {
         var generatedVouchersCount = req.params.count;
 
         if (generatedVouchersCount >= 1 && generatedVouchersCount <= 100) {
-            var generatedVoucherCodes = voucherCodes.generate({
-                length: 8,
-                count: generatedVouchersCount
-            });
-
-            var generatedVouchers = [];
-            generatedVoucherCodes.forEach(function (code) {
-                generatedVouchers.push({voucherId: code, used: false, discount: voucherGenerator.randomNumber(1, 50)});
-            });
-
+            var generatedVouchers =  voucherGenerator.generateVouchers(generatedVouchersCount);
             Voucher.collection.insert(generatedVouchers);
 
             res.json(generatedVouchers);

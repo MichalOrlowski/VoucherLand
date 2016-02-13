@@ -30,9 +30,13 @@
 	<div class="container">
 
 		<div class="jumbotron text-center">
-			<h1>Price: <span class="label label-info">{{productData.currentProductPrice}}</span></h1>
+			<div ng-hide="productData.voucherDiscount > 0">
+				<h1>Price: <span class="label label-info">{{productData.selectedProductPrice}}</span></h1>
+			</div>
+
 			<div ng-show="productData.voucherDiscount > 0">
-				<h2>Voucher discount: <span class="label label-info">{{productData.voucherDiscount}}</span></h2>
+				<h1>New price: <span class="label label-info">{{productData.currentProductPrice}}</span></h1>
+				<h2>Voucher discount: <span class="label label-info">{{productData.voucherDiscount}} {{productData.voucherDiscountType}}</span></h2>
 			</div>
 		</div>
 

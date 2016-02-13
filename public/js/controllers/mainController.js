@@ -6,7 +6,8 @@ angular.module('voucherController', [])
         $scope.productData = {
             selectedProductPrice: 0,
             currentProductPrice: 0,
-            voucherDiscount: '',
+            voucherDiscount: 0,
+            voucherDiscountType: '',
             products: [
                 {'id': 1, 'name': 'Certificate', 'price': 700},
                 {'id': 2, 'name': 'Conference', 'price': 400},
@@ -19,7 +20,7 @@ angular.module('voucherController', [])
                 Vouchers.validateVoucher($scope.formData.voucherCode)
                     .success(function (voucher) {
                         if (!voucher.used) {
-                            $scope.calculateNewPriceWithDiscount(voucher.discount);
+                            $scope.processNewDiscount(voucher);
                         } else {
                             $scope.errorMessage = "Voucher already used!";
                         }
@@ -32,21 +33,33 @@ angular.module('voucherController', [])
 
         $scope.updatePrice = function () {
             $scope.productData.currentProductPrice = $scope.productData.selectedProductPrice;
-            $scope.productData.voucherDiscount = '';
+            $scope.productData.voucherDiscount = 0;
+            $scope.productData.voucherDiscountType = '';
         };
 
-        $scope.calculateNewPriceWithDiscount = function(discount) {
-            var productPrice = $scope.productData.selectedProductPrice;
-            $scope.productData.currentProductPrice = productPrice - (productPrice * discount / 100);
+        $scope.processNewDiscount = function(voucher) {
+            $scope.calculateNewPriceWithDiscount(voucher);
+
             $scope.errorMessage = null;
-            $scope.productData.voucherDiscount = discount;
+            $scope.productData.voucherDiscount = voucher.discount;
+            $scope.productData.voucherDiscountType = voucher.discountType;
+        };
+
+        $scope.calculateNewPriceWithDiscount = function(voucher) {
+            var productPrice = $scope.productData.selectedProductPrice;
+
+            if(voucher.discountType === '%') {
+                $scope.productData.currentProductPrice = productPrice - (productPrice * voucher.discount / 100);
+            } else if(voucher.discountType === 'PLN') {
+                $scope.productData.currentProductPrice = productPrice - voucher.discount;
+            }
         };
 
         $scope.useVoucher = function () {
             if ($scope.formData.voucherCode != undefined) {
                 Vouchers.useVoucher($scope.formData.voucherCode)
                     .success(function (voucher) {
-                        calculateNewPriceWithDiscount(voucher.discount);
+                        $scope.processNewDiscount(voucher);
                     })
                     .error(function (voucher) {
                         $scope.errorMessage = "Invalid voucher!";
