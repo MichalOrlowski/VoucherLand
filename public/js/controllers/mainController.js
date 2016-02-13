@@ -36,8 +36,6 @@ angular.module('voucherController', [])
 
         $scope.updatePrice = function () {
             $scope.productData.currentProductPrice = $scope.productData.selectedProductPrice;
-            $scope.productData.voucherDiscount = 0;
-            $scope.productData.voucherDiscountType = '';
 
             $scope.clearMessages();
         };
@@ -45,6 +43,8 @@ angular.module('voucherController', [])
         $scope.clearMessages = function() {
             $scope.errorMessage = null;
             $scope.successMessage = null;
+            $scope.productData.voucherDiscount = 0;
+            $scope.productData.voucherDiscountType = '';
         }
 
         $scope.processNewDiscount = function(voucher) {
