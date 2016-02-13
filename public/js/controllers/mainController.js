@@ -1,6 +1,4 @@
 angular.module('voucherController', [])
-
-    // inject the Todo service factory into our controller
     .controller('mainController', function ($scope, $http, Vouchers) {
         $scope.formData = {};
         $scope.errorMessage;
@@ -8,6 +6,7 @@ angular.module('voucherController', [])
         $scope.productData = {
             selectedProductPrice: 0,
             currentProductPrice: 0,
+            voucherDiscount: '',
             products: [
                 {'id': 1, 'name': 'Certificate', 'price': 700},
                 {'id': 2, 'name': 'Conference', 'price': 400},
@@ -20,7 +19,7 @@ angular.module('voucherController', [])
                 Vouchers.validateVoucher($scope.formData.voucherCode)
                     .success(function (voucher) {
                         if (!voucher.used) {
-                            calculateNewPriceWithDiscount();
+                            $scope.calculateNewPriceWithDiscount(voucher.discount);
                         } else {
                             $scope.errorMessage = "Voucher already used!";
                         }
@@ -33,19 +32,21 @@ angular.module('voucherController', [])
 
         $scope.updatePrice = function () {
             $scope.productData.currentProductPrice = $scope.productData.selectedProductPrice;
+            $scope.productData.voucherDiscount = '';
         };
 
-        this.calculateNewPriceWithDiscount = function(discount) {
+        $scope.calculateNewPriceWithDiscount = function(discount) {
             var productPrice = $scope.productData.selectedProductPrice;
             $scope.productData.currentProductPrice = productPrice - (productPrice * discount / 100);
             $scope.errorMessage = null;
+            $scope.productData.voucherDiscount = discount;
         };
 
         $scope.useVoucher = function () {
             if ($scope.formData.voucherCode != undefined) {
                 Vouchers.useVoucher($scope.formData.voucherCode)
                     .success(function (voucher) {
-                        calculateNewPriceWithDiscount();
+                        calculateNewPriceWithDiscount(voucher.discount);
                     })
                     .error(function (voucher) {
                         $scope.errorMessage = "Invalid voucher!";

@@ -80,7 +80,7 @@ module.exports = function (app) {
 // util methods -------------------------------------------------------------
 validateNaiveToken = function(req, res) {
     var naiveToken = req.header('NaiveToken');
-    if(naiveToken != 'NaiveToken2') {
+    if(naiveToken != 'NaiveToken') {
         res.status(401).send('User unauthorized');
     }
 };
