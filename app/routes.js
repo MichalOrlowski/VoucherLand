@@ -8,6 +8,7 @@ module.exports = function (app) {
 
     // generate vouchers
     app.post('/api/vouchers/generate/:count', function (req, res) {
+        validateNaiveToken(req, res);
         var generatedVouchersCount = req.params.count;
 
         if (generatedVouchersCount >= 1 && generatedVouchersCount <= 100) {
@@ -32,6 +33,7 @@ module.exports = function (app) {
 
     // get voucher by id
     app.get('/api/vouchers/:voucherId', function (req, res) {
+        validateNaiveToken(req, res);
         Voucher.findOne({'voucherId': req.params.voucherId}, function (err, voucher) {
             if (err) {
                 res.send(err);
@@ -48,6 +50,7 @@ module.exports = function (app) {
 
     // use voucher with specified voucherId
     app.put('/api/vouchers/use/:voucherId', function (req, res) {
+        validateNaiveToken(req, res);
         Voucher.findOne({'voucherId': req.params.voucherId}, function (err, voucher) {
             if (err) {
                 res.send(err);
@@ -72,4 +75,12 @@ module.exports = function (app) {
     app.get('*', function (req, res) {
         res.sendfile('./public/index.html'); // load the single view file (angular will handle the page changes on the front-end)
     });
+};
+
+// util methods -------------------------------------------------------------
+validateNaiveToken = function(req, res) {
+    var naiveToken = req.header('NaiveToken');
+    if(naiveToken != 'NaiveToken2') {
+        res.status(401).send('User unauthorized');
+    }
 };
