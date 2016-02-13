@@ -19,7 +19,7 @@ module.exports = function (app) {
 
     generateVouchers = function (req, res) {
         var generatedVouchersCount = req.params.count;
-        if (generatedVouchersCount >= 1 && generatedVouchersCount <= 100) {
+        if (generatedVouchersCount >= 1 && generatedVouchersCount <= 100000) {
             var campaignName = req.params.campaign;
 
             if (campaignName) {
@@ -62,7 +62,7 @@ module.exports = function (app) {
     });
 
     // use voucher with specified voucherId
-    app.put('/api/vouchers/use/:voucherId', function (req, res) {
+    app.post('/api/vouchers/use/:voucherId', function (req, res) {
         validateNaiveToken(req, res);
         Voucher.findOne({'voucherId': req.params.voucherId}, function (err, voucher) {
             if (err) {
@@ -73,11 +73,11 @@ module.exports = function (app) {
                 res.status(400).send('No voucher with specified voucherId');
             }
 
-            if (voucher.used) {
+            if (voucher.usages === 0) {
                 res.status(400).send('Voucher already used');
             }
 
-            voucher.used = true;
+            voucher.usages--;
             voucher.save();
 
             res.json(voucher);

@@ -19,7 +19,7 @@ angular.module('voucherController', [])
             if ($scope.formData.voucherCode != undefined) {
                 Vouchers.validateVoucher($scope.formData.voucherCode)
                     .success(function (voucher) {
-                        if (!voucher.used) {
+                        if (voucher.usages > 0) {
                             $scope.processNewDiscount(voucher);
                         } else {
                             $scope.errorMessage = "Voucher already used!";

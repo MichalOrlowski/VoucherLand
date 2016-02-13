@@ -25,9 +25,9 @@ exports.generateVouchers = function (generatedVouchersCount, campaignName) {
     var generatedVouchers = [];
     generatedVoucherCodes.forEach(function (code) {
         generatedVouchers.push({voucherId: code,
-            used: false,
             discount: randomNumber(1, 50),
-            discountType: randomDiscountType()
+            discountType: randomDiscountType(),
+            usages: randomNumber(1, 5)
         });
     });
 
