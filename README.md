@@ -34,14 +34,14 @@ All requests should contain token in header:
 [
   {
     "voucherId": "COSTA2_0E3FzHh9",
-    "used": false,
+    "usages": 5,
     "discount": 29,
     "discountType": "PLN",
     "_id": "56bef5a93b84a7a803520c6c"
   },
   {
     "voucherId": "COSTA2_uclKotWY",
-    "used": false,
+    "usages": 1,
     "discount": 31,
     "discountType": "%",
     "_id": "56bef5a93b84a7a803520c6d"
@@ -61,7 +61,7 @@ All requests should contain token in header:
 {
   "_id": "56beef73438e76d40500636e"
   "voucherId": "undefined_kShnoftO"
-  "used": false
+  "usages": 2
   "discount": 35
   "discountType": "PLN"
 }
@@ -69,7 +69,7 @@ All requests should contain token in header:
 
 ### Use voucher
 
-`PUT` `/api/vouchers/use/:voucherId`
+`POST` `/api/vouchers/use/:voucherId`
 
 ##### Response
 
@@ -77,7 +77,7 @@ All requests should contain token in header:
 {
   "_id": "56beef73438e76d40500636e"
   "voucherId": "undefined_kShnoftO"
-  "used": true
+  "usages": 0
   "discount": 35
   "discountType": "PLN"
 }
