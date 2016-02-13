@@ -33,9 +33,15 @@ module.exports = function (app) {
                 }
 
                 var generatedVouchers = voucherGenerator.generateVouchers(generatedVouchersCount, campaign[0].name);
-                Voucher.collection.insert(generatedVouchers);
+                Voucher.collection.insert(generatedVouchers, onBatchInsert);
 
-                res.json(generatedVouchers);
+                function onBatchInsert(err, generatedVouchers) {
+                    if (err) {
+                        res.status(500).send(err);
+                    } else {
+                        res.json(generatedVouchers);
+                    }
+                }
             });
 
         }
