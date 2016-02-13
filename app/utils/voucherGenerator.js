@@ -15,8 +15,9 @@ var discountTypes = [
 ]
 
 // Generate single voucher
-exports.generateVouchers = function (generatedVouchersCount) {
+exports.generateVouchers = function (generatedVouchersCount, campaignName) {
     var generatedVoucherCodes = voucherCodes.generate({
+        prefix: campaignName + '_',
         length: 8,
         count: generatedVouchersCount
     });

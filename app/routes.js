@@ -1,4 +1,5 @@
 var Voucher = require('./models/voucher');
+var Campaign = require('./models/campaign');
 var voucherGenerator = require('./utils/voucherGenerator');
 
 module.exports = function (app) {
@@ -6,20 +7,42 @@ module.exports = function (app) {
     // api ---------------------------------------------------------------------
 
     // generate vouchers
+    app.post('/api/vouchers/generate/:count/campaign/:campaign', function (req, res) {
+        validateNaiveToken(req, res);
+        generateVouchers(req, res);
+    });
+
     app.post('/api/vouchers/generate/:count', function (req, res) {
         validateNaiveToken(req, res);
+        generateVouchers(req, res);
+    });
+
+    generateVouchers = function (req, res) {
         var generatedVouchersCount = req.params.count;
-
         if (generatedVouchersCount >= 1 && generatedVouchersCount <= 100) {
-            var generatedVouchers =  voucherGenerator.generateVouchers(generatedVouchersCount);
-            Voucher.collection.insert(generatedVouchers);
+            var campaignName = req.params.campaign;
 
-            res.json(generatedVouchers);
+            if (campaignName) {
+                Campaign.collection.insert({name: campaignName, startDate: new Date()});
+            }
+            var query = Campaign.find({}).sort({'startDate': -1}).limit(1);
+
+            query.exec(function (err, campaign) {
+                if (err) {
+                    res.status(500).send(err);
+                }
+
+                var generatedVouchers = voucherGenerator.generateVouchers(generatedVouchersCount, campaign[0].name);
+                Voucher.collection.insert(generatedVouchers);
+
+                res.json(generatedVouchers);
+            });
+
         }
         else {
             res.status(400).send('Wrong vouchers count number');
         }
-    });
+    };
 
     // get voucher by id
     app.get('/api/vouchers/:voucherId', function (req, res) {
@@ -29,7 +52,7 @@ module.exports = function (app) {
                 res.send(err);
             }
 
-            if(voucher === null) {
+            if (voucher === null) {
                 res.status(400).send('No voucher with specified voucherId');
             }
 
@@ -46,11 +69,11 @@ module.exports = function (app) {
                 res.send(err);
             }
 
-            if(voucher === null) {
+            if (voucher === null) {
                 res.status(400).send('No voucher with specified voucherId');
             }
 
-            if(voucher.used) {
+            if (voucher.used) {
                 res.status(400).send('Voucher already used');
             }
 
@@ -68,9 +91,9 @@ module.exports = function (app) {
 };
 
 // util methods -------------------------------------------------------------
-validateNaiveToken = function(req, res) {
+validateNaiveToken = function (req, res) {
     var naiveToken = req.header('NaiveToken');
-    if(naiveToken != 'NaiveToken') {
+    if (naiveToken != 'NaiveToken') {
         res.status(401).send('User unauthorized');
     }
 };
