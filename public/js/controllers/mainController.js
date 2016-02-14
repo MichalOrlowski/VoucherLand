@@ -21,7 +21,7 @@ angular.module('voucherController', [])
             if ($scope.formData.voucherCode != undefined) {
                 Vouchers.validateVoucher($scope.formData.voucherCode)
                     .success(function (voucher) {
-                        if (voucher.usages > 0) {
+                        if (voucher.usages > 0 && !voucher.expired) {
                             $scope.processNewDiscount(voucher);
                             $scope.successMessage = "Voucher is valid!"
                         } else {
@@ -40,14 +40,14 @@ angular.module('voucherController', [])
             $scope.clearMessages();
         };
 
-        $scope.clearMessages = function() {
+        $scope.clearMessages = function () {
             $scope.errorMessage = null;
             $scope.successMessage = null;
             $scope.productData.voucherDiscount = 0;
             $scope.productData.voucherDiscountType = '';
         }
 
-        $scope.processNewDiscount = function(voucher) {
+        $scope.processNewDiscount = function (voucher) {
             $scope.clearMessages();
             $scope.calculateNewPriceWithDiscount(voucher);
 
@@ -55,17 +55,18 @@ angular.module('voucherController', [])
             $scope.productData.voucherDiscountType = voucher.discountType;
         };
 
-        $scope.calculateNewPriceWithDiscount = function(voucher) {
+        $scope.calculateNewPriceWithDiscount = function (voucher) {
             var productPrice = $scope.productData.selectedProductPrice;
 
-            if(voucher.discountType === '%') {
+            if (voucher.discountType === '%') {
                 $scope.productData.currentProductPrice = productPrice - (productPrice * voucher.discount / 100);
-            } else if(voucher.discountType === 'PLN') {
+            } else if (voucher.discountType === 'PLN') {
                 $scope.productData.currentProductPrice = productPrice - voucher.discount;
             }
         };
 
         $scope.useVoucher = function () {
+            $scope.clearMessages();
             if ($scope.formData.voucherCode != undefined) {
                 Vouchers.useVoucher($scope.formData.voucherCode)
                     .success(function (voucher) {

@@ -4,5 +4,6 @@ module.exports = mongoose.model('Voucher', {
 	voucherId: String,
 	discount: Number,
 	discountType: String,
-	usages: Number
+	usages: Number,
+	voucherPrefix: String,
 });
