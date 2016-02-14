@@ -24,16 +24,17 @@ exports.generateVouchers = function (req, res) {
                 return res.status(500).send(err);
             }
 
-            var generatedVouchers = voucherGenerator.generateVouchers(generatedVouchersCount, currentCampaign);
-            Voucher.collection.insert(generatedVouchers, onBatchInsert);
+            voucherGenerator.generateVouchers(generatedVouchersCount, currentCampaign, function(generatedVouchers) {
+                Voucher.collection.insert(generatedVouchers, onBatchInsert);
 
-            function onBatchInsert(err, generatedVouchers) {
-                if (err) {
-                    res.status(500).send(err);
-                } else {
-                    res.json(generatedVouchers);
+                function onBatchInsert(err, generatedVouchers) {
+                    if (err) {
+                        res.status(500).send(err);
+                    } else {
+                        res.json(generatedVouchers);
+                    }
                 }
-            }
+            });
         });
 
     }
