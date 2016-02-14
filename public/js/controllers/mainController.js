@@ -21,15 +21,15 @@ angular.module('voucherController', [])
             if ($scope.formData.voucherCode != undefined) {
                 Vouchers.validateVoucher($scope.formData.voucherCode)
                     .success(function (voucher) {
-                        if (voucher.usages > 0 && !voucher.expired) {
+                        if (voucher.usages > 0) {
                             $scope.processNewDiscount(voucher);
                             $scope.successMessage = "Voucher is valid!"
                         } else {
                             $scope.errorMessage = "Voucher already used!";
                         }
                     })
-                    .error(function (voucher) {
-                        $scope.errorMessage = "Invalid voucher!";
+                    .error(function (err) {
+                        $scope.errorMessage = err + "!";
                     });
             }
         };
@@ -73,8 +73,8 @@ angular.module('voucherController', [])
                         $scope.processNewDiscount(voucher);
                         $scope.successMessage = "You bought item with lower price!";
                     })
-                    .error(function (voucher) {
-                        $scope.errorMessage = "Invalid voucher!";
+                    .error(function (err) {
+                        $scope.errorMessage = err + "!";
                     });
             }
         };

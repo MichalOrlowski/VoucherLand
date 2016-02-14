@@ -50,7 +50,7 @@ exports.getVoucherById = function (req, res) {
         }
 
         if (voucher === null) {
-            return res.status(400).send('No voucher with specified voucherId');
+            return res.status(400).send('Invalid voucher');
         }
 
         checkVoucherExpiration(res, voucher);
@@ -64,7 +64,7 @@ exports.validateVoucher = function (req, res) {
         }
 
         if (voucher === null) {
-            return res.status(400).send('No voucher with specified voucherId');
+            return res.status(400).send('Invalid voucher');
         }
 
         if (voucher.usages === 0) {
