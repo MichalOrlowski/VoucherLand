@@ -19,11 +19,12 @@ exports.generateVouchers = function (req, res) {
         var query = Campaign.find({}).sort({'startDate': -1}).limit(1);
 
         query.exec(function (err, campaign) {
+            var currentCampaign = campaignName ? campaignName : campaign[0].name;
             if (err) {
                 return res.status(500).send(err);
             }
 
-            var generatedVouchers = voucherGenerator.generateVouchers(generatedVouchersCount, campaign[0].name);
+            var generatedVouchers = voucherGenerator.generateVouchers(generatedVouchersCount, currentCampaign);
             Voucher.collection.insert(generatedVouchers, onBatchInsert);
 
             function onBatchInsert(err, generatedVouchers) {
