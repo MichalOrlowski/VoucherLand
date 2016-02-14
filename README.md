@@ -6,7 +6,7 @@ REST documentation:
 
 All requests should contain token in header:
 
-```json
+```
 {
   NaiveToken: NaiveToken
 }
@@ -14,38 +14,43 @@ All requests should contain token in header:
 
 ## Voucher generation API
 
-### Generate vouchers in current campaign
+### Generate vouchers in specified campaign (if campaignName is empty, use current one)
 
 `POST` `/api/vouchers/generate/:count`
-
-### Generate vouchers with new campaign (**new one will override old one!**)
-
-`POST` `/api/vouchers/generate/:count/campaign/:campaign`
 
 ##### Parameters
 
 `count` - number of generated vouchers (1 >= N >= 100k)
 
-`campaign` - name of new campaign (if there is no campaign name, last active will be used)
+##### Request
+
+```
+{
+  campaignName=XMAS
+  expirationDate=2017-01-23
+}
+```
 
 ##### Response
 
 ```json
 [
-  {
-    "voucherId": "COSTA2_0E3FzHh9",
-    "usages": 5,
-    "discount": 29,
-    "discountType": "PLN",
-    "_id": "56bef5a93b84a7a803520c6c"
-  },
-  {
-    "voucherId": "COSTA2_uclKotWY",
-    "usages": 1,
-    "discount": 31,
-    "discountType": "%",
-    "_id": "56bef5a93b84a7a803520c6d"
-  }
+    {
+      "voucherId": "XMAS_Q5tkF8KX",
+      "discount": 48,
+      "discountType": "%",
+      "usages": 2,
+      "voucherPrefix": "XMAS",
+      "_id": "56c0316a610c6dfc0b47d704"
+    },
+    {
+      "voucherId": "XMAS_OaX4ffKe",
+      "discount": 7,
+      "discountType": "PLN",
+      "usages": 5,
+      "voucherPrefix": "XMAS",
+      "_id": "56c0316a610c6dfc0b47d705"
+    }
 ]
 ```
 
@@ -59,11 +64,11 @@ All requests should contain token in header:
 
 ```json
 {
-  "_id": "56beef73438e76d40500636e"
-  "voucherId": "undefined_kShnoftO"
-  "usages": 2
-  "discount": 35
-  "discountType": "PLN"
+  "_id": "56beef73438e76d40500636e",
+  "voucherId": "undefined_kShnoftO",
+  "usages": 2,
+  "discount": 35,
+  "discountType": "PLN",
 }
 ```
 
@@ -75,10 +80,10 @@ All requests should contain token in header:
 
 ```json
 {
-  "_id": "56beef73438e76d40500636e"
-  "voucherId": "undefined_kShnoftO"
-  "usages": 0
-  "discount": 35
-  "discountType": "PLN"
+  "_id": "56beef73438e76d40500636e",
+  "voucherId": "undefined_kShnoftO",
+  "usages": 0,
+  "discount": 35,
+  "discountType": "PLN",
 }
 ```
