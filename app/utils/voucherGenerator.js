@@ -27,40 +27,41 @@ exports.generateVouchers = function (generatedVouchersCount, campaignName, callb
                 usages: randomNumber(1, 5),
                 voucherPrefix: campaignName
             });
-
-            return callback(generatedVouchers);
         });
+
+        return callback(generatedVouchers);
     });
 };
 
 // Generate single unique voucher
 generateUniqueVouchers = function (uniqueVouchersCount, campaignName, callback) {
-    var generatedVouchers = [];
+    findAllVoucherIds(function (currentVouchers) {
+        var generatedVouchers = [];
 
-    for (var i = 0; i < uniqueVouchersCount; i++) {
-        var generatedVoucherCode = voucherCodes.generate({
-            prefix: campaignName + '_',
-            length: 8,
-            count: 1
-        });
+        while (generatedVouchers.length < uniqueVouchersCount) {
+            var generatedVoucherCode = voucherCodes.generate({
+                prefix: campaignName + '_',
+                length: 8,
+                count: 1
+            });
 
-        findVoucherById(generatedVoucherCode, function (voucher) {
-            if(voucher) {
-                generatedVouchers.push(voucher);
+            if (currentVouchers.indexOf(generatedVoucherCode) === -1 && generatedVouchers.indexOf(generatedVoucherCode) === -1) {
+                generatedVouchers.push(generatedVoucherCode);
             }
-            if (generatedVouchers.length === parseInt(uniqueVouchersCount)) {
-                return callback(generatedVouchers);
-            }
-        })
-    }
+        }
+
+        return callback(generatedVouchers);
+    });
 };
 
-// Helper get voucher by id method - TODO should be moved to DAO layer?
-findVoucherById = function (voucherId, callback) {
-    Voucher.findOne({'voucherId': voucherId}, function (err, voucher) {
-        if (!voucher) {
-            return callback(voucherId);
-        }
-    });
+// Get all voucher ids - TODO move to DAO layer (if it's good practice)
+findAllVoucherIds = function (callback) {
+    Voucher.find(function (err, vouchers) {
+        var allVoucherIds = [];
+        vouchers.forEach(function (voucher) {
+            allVoucherIds.push(voucher.voucherId);
+        });
+        return callback(allVoucherIds);
+    })
 };
 
