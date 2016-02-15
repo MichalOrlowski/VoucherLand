@@ -45,7 +45,9 @@ generateUniqueVouchers = function (uniqueVouchersCount, campaignName, callback) 
         });
 
         findVoucherById(generatedVoucherCode, function (voucher) {
-            generatedVouchers.push(voucher);
+            if(voucher) {
+                generatedVouchers.push(voucher);
+            }
             if (generatedVouchers.length === parseInt(uniqueVouchersCount)) {
                 return callback(generatedVouchers);
             }
